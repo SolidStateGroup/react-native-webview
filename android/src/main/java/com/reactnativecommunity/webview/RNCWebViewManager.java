@@ -368,6 +368,11 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
     ((RNCWebView) view).setMessagingEnabled(enabled);
   }
 
+  @ReactProp(name = "incognito")
+  public void setIncognito(WebView view, boolean enabled) {
+    ((RNCWebView) view).setIncognito(enabled);
+  }
+
   @ReactProp(name = "source")
   public void setSource(WebView view, @Nullable ReadableMap source) {
     if (source != null) {
@@ -668,6 +673,7 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
     protected @Nullable
     RNCWebViewClient mRNCWebViewClient;
     protected boolean sendContentSizeChangeEvents = false;
+    protected boolean incognito = false;
 
     /**
      * WebView must be created with an context of the current activity
@@ -681,6 +687,10 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
 
     public void setSendContentSizeChangeEvents(boolean sendContentSizeChangeEvents) {
       this.sendContentSizeChangeEvents = sendContentSizeChangeEvents;
+    }
+
+    public void setIncognito(boolean incognito) {
+      this.incognito = incognito;
     }
 
     @Override
@@ -775,6 +785,13 @@ public class RNCWebViewManager extends SimpleViewManager<WebView> {
     }
 
     protected void cleanupCallbacksAndDestroy() {
+      if (this.incognito) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+          CookieManager.getInstance().removeAllCookies(null);
+        } else {
+          CookieManager.getInstance().removeAllCookie();
+        }
+      }
       setWebViewClient(null);
       destroy();
     }
