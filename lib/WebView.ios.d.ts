@@ -1,8 +1,8 @@
 import React from 'react';
-import { WebViewProgressEvent, IOSWebViewProps, NativeWebViewIOS, State } from './WebViewTypes';
+import { IOSWebViewProps, NativeWebViewIOS, State } from './WebViewTypes';
 declare class WebView extends React.Component<IOSWebViewProps, State> {
     static defaultProps: {
-        useWebKit: boolean;
+        javaScriptEnabled: boolean;
         cacheEnabled: boolean;
         originWhitelist: string[];
         useSharedProcessPool: boolean;
@@ -10,7 +10,6 @@ declare class WebView extends React.Component<IOSWebViewProps, State> {
     static isFileUploadSupported: () => Promise<boolean>;
     state: State;
     webViewRef: React.RefObject<NativeWebViewIOS>;
-    UNSAFE_componentWillMount(): void;
     getCommands: () => import("./WebViewTypes").WebViewCommands;
     /**
      * Go forward one page in the web view's history.
@@ -28,6 +27,10 @@ declare class WebView extends React.Component<IOSWebViewProps, State> {
      * Stop loading the current page.
      */
     stopLoading: () => void;
+    /**
+     * Request focus on WebView rendered page.
+     */
+    requestFocus: () => void;
     /**
      * Posts a message to the web view, which will emit a `message` event.
      * Accepts one argument, `data`, which must be a string.
@@ -59,7 +62,7 @@ declare class WebView extends React.Component<IOSWebViewProps, State> {
     onLoadingError: (event: import("react-native").NativeSyntheticEvent<import("./WebViewTypes").WebViewError>) => void;
     onLoadingFinish: (event: import("react-native").NativeSyntheticEvent<import("./WebViewTypes").WebViewNavigation>) => void;
     onMessage: (event: import("react-native").NativeSyntheticEvent<import("./WebViewTypes").WebViewMessage>) => void;
-    onLoadingProgress: (event: WebViewProgressEvent) => void;
+    onLoadingProgress: (event: import("react-native").NativeSyntheticEvent<import("./WebViewTypes").WebViewNativeProgressEvent>) => void;
     onShouldStartLoadWithRequestCallback: (shouldStart: boolean, _url: string, lockIdentifier: number) => void;
     componentDidUpdate(prevProps: IOSWebViewProps): void;
     showRedboxOnPropChanges(prevProps: IOSWebViewProps, propName: keyof IOSWebViewProps): void;
