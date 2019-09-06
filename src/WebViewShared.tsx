@@ -1,20 +1,11 @@
 import escapeStringRegexp from 'escape-string-regexp';
 import React from 'react';
-import {
-  Linking,
-  UIManager as NotTypedUIManager,
-  View,
-  ActivityIndicator,
-  Text,
-} from 'react-native';
+import { Linking, View, ActivityIndicator, Text } from 'react-native';
 import {
   WebViewNavigationEvent,
   OnShouldStartLoadWithRequest,
-  CustomUIManager,
 } from './WebViewTypes';
 import styles from './WebView.styles';
-
-const UIManager = NotTypedUIManager as CustomUIManager;
 
 const defaultOriginWhitelist = ['http://*', 'https://*'];
 
@@ -65,17 +56,8 @@ const createOnShouldStartLoadWithRequest = (
   };
 };
 
-const getViewManagerConfig = (
-  viewManagerName: 'RNCUIWebView' | 'RNCWKWebView' | 'RNCWebView',
-) => {
-  if (!UIManager.getViewManagerConfig) {
-    return UIManager[viewManagerName];
-  }
-  return UIManager.getViewManagerConfig(viewManagerName);
-};
-
 const defaultRenderLoading = () => (
-  <View style={styles.loadingView}>
+  <View style={styles.loadingOrErrorView}>
     <ActivityIndicator />
   </View>
 );
@@ -84,7 +66,7 @@ const defaultRenderError = (
   errorCode: number,
   errorDesc: string,
 ) => (
-  <View style={styles.errorContainer}>
+  <View style={styles.loadingOrErrorView}>
     <Text style={styles.errorTextTitle}>Error loading page</Text>
     <Text style={styles.errorText}>{`Domain: ${errorDomain}`}</Text>
     <Text style={styles.errorText}>{`Error Code: ${errorCode}`}</Text>
@@ -95,7 +77,6 @@ const defaultRenderError = (
 export {
   defaultOriginWhitelist,
   createOnShouldStartLoadWithRequest,
-  getViewManagerConfig,
   defaultRenderLoading,
   defaultRenderError,
 };
